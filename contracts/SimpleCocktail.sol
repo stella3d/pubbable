@@ -16,6 +16,9 @@ contract SimpleCocktail is Owned {
     string public name;
     bytes32[] public ingredients;
 
+    // TODO - move into utility lib ?
+    string indexError = "index must be less than length of ingredients";
+
     constructor(string memory _name) {
         console.log("Deploying a SimpleCocktail:", _name);
         owner = msg.sender;
@@ -41,7 +44,12 @@ contract SimpleCocktail is Owned {
     }
 
     function getIngredient(uint index) public view returns(bytes32) {
-        require(index < ingredients.length, "index must be less than length of ingredients");
+        require(index < ingredients.length, indexError);
         return ingredients[index];
+    }
+
+    function setIngredient(uint256 index, bytes32 value) public {
+        require(index < ingredients.length, indexError);
+        ingredients[index] = value;
     }
 }
