@@ -8,21 +8,13 @@ function stringToBytes32(str) {
   if(hexStr.length > 64)
     throw new Exception("maximum length of hex string is 64, but " + str + "has length " + hexStr.length);
 
-  //console.log("padLeft:", 64 - hexStr.length);
   return web3.utils.padLeft(hexStr, 64);
-  //return hexStr;
-}
-
-function trimHexPrefix(str) {
-  return str.startsWith('0x') ? str.slice(2) : str;
 }
 
 describe("SimpleCocktail", function () {
   let SimpleCocktail;
 
   const CocktailName = "Michelada";
-
-  const BaseIngredients = ""
 
   before(async () => {
     SimpleCocktail = await ethers.getContractFactory("SimpleCocktail");
@@ -104,7 +96,7 @@ describe("SimpleCocktail", function () {
     const setIngredientTx = await cocktail.setIngredients([ingredient0, ingredient1]);
     await setIngredientTx.wait(); // wait for tx mine
 
-    const getTx = await cocktail.getIngredients();
-    console.log(getTx);
+    const ingredients = await cocktail.getIngredients();
+    console.log(ingredients);
   });
 });
