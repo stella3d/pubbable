@@ -47,7 +47,7 @@ describe("SimpleCocktail", function () {
     // check out-of-bounds index guard 
     await expect(cocktail.getIngredient(0)).to.be.revertedWith("index must be less than length of ingredients");
 
-    const addedIngredient = "Mexican lager";
+    const addedIngredient = stringToBytes32("Mexican lager");
     const addIngredientTx = await cocktail.addIngredient(addedIngredient);
     await addIngredientTx.wait();
     expect(await cocktail.getIngredient(0)).to.equal(addedIngredient);
@@ -63,16 +63,30 @@ describe("SimpleCocktail", function () {
     const setIngredientTx = await cocktail.setIngredients([ingredient0, ingredient1, ingredient2]);
     await setIngredientTx.wait(); // wait for tx mine
 
-    expect(await cocktail.getIngredient(0)).to.equal(trimHexPrefix(ingredient0));
-    expect(await cocktail.getIngredient(1)).to.equal(trimHexPrefix(ingredient1));
-    expect(await cocktail.getIngredient(2)).to.equal(trimHexPrefix(ingredient2));
+    expect(await cocktail.getIngredient(0)).to.equal(ingredient0);
+    expect(await cocktail.getIngredient(1)).to.equal(ingredient1);
+    expect(await cocktail.getIngredient(2)).to.equal(ingredient2);
     // make sure only 3 string slots were allocated 
     await expect(cocktail.getIngredient(3)).to.be.revertedWith("index must be less than length of ingredients");
 
     // make sure that adding ingredients still works after initializing to a fixed length
-    const ingredient3 = "dash of salt";
+    const ingredient3 = stringToBytes32("dash of salt");
     const addIngredientTx = await cocktail.addIngredient(ingredient3);
     await addIngredientTx.wait();
-    expect(await cocktail.getIngredient(3)).to.equal(trimHexPrefix(ingredient3));
+    expect(await cocktail.getIngredient(3)).to.equal(ingredient3);
+  });
+
+
+  it("Should allow retrieving the ingredient list as a bytes32[]", async function () {
+    const cocktail = await SimpleCocktail.deploy(CocktailName);
+    await cocktail.deployed();
+
+    const ingredient0 = stringToBytes32("1 pint Mexican lager");
+    const ingredient1 = stringToBytes32("2oz tomato juice");
+    const setIngredientTx = await cocktail.setIngredients([ingredient0, ingredient1]);
+    await setIngredientTx.wait(); // wait for tx mine
+
+    const getTx = await cocktail.getIngredients();
+    console.log(getTx);
   });
 });
