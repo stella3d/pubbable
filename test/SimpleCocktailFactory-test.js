@@ -1,6 +1,6 @@
 
 const { expect } = require("chai");
-const util = require("./util.js");
+const util = require("./util");
 
 describe("SimpleCocktailFactory", function () {
     let Factory, Cocktail;

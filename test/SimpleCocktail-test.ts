@@ -1,9 +1,10 @@
-const process = require("process");
-const { expect } = require("chai");
-const util = require("./util.js");
+import { expect } from "chai";
+import { ContractFactory } from "ethers";
+import { ethers } from "hardhat";
+import { stringToBytes32 } from "./util";
 
 describe("SimpleCocktail", function () {
-  let SimpleCocktail;
+  let SimpleCocktail: ContractFactory;
 
   const CocktailName = "Michelada";
 
@@ -30,7 +31,7 @@ describe("SimpleCocktail", function () {
     // check out-of-bounds index guard 
     await expect(cocktail.getIngredient(0)).to.be.revertedWith("index must be less than length of ingredients");
 
-    const addedIngredient = util.stringToBytes32("Mexican lager");
+    const addedIngredient = stringToBytes32("Mexican lager");
     const addIngredientTx = await cocktail.addIngredient(addedIngredient);
     await addIngredientTx.wait();
     expect(await cocktail.getIngredient(0)).to.equal(addedIngredient);
@@ -40,9 +41,9 @@ describe("SimpleCocktail", function () {
     const cocktail = await SimpleCocktail.deploy(CocktailName);
     await cocktail.deployed();
 
-    const ingredient0 = util.stringToBytes32("1 pint Mexican lager");
-    const ingredient1 = util.stringToBytes32("2oz tomato juice");
-    const ingredient2 = util.stringToBytes32("1/2 juiced lime, quartered");
+    const ingredient0 = stringToBytes32("1 pint Mexican lager");
+    const ingredient1 = stringToBytes32("2oz tomato juice");
+    const ingredient2 = stringToBytes32("1/2 juiced lime, quartered");
     const setIngredientTx = await cocktail.setIngredients([ingredient0, ingredient1, ingredient2]);
     await setIngredientTx.wait(); // wait for tx mine
 
@@ -53,7 +54,7 @@ describe("SimpleCocktail", function () {
     await expect(cocktail.getIngredient(3)).to.be.revertedWith("index must be less than length of ingredients");
 
     // make sure that adding ingredients still works after initializing to a fixed length
-    const ingredient3 = util.stringToBytes32("dash of salt");
+    const ingredient3 = stringToBytes32("dash of salt");
     const addIngredientTx = await cocktail.addIngredient(ingredient3);
     await addIngredientTx.wait();
     expect(await cocktail.getIngredient(3)).to.equal(ingredient3);
@@ -63,15 +64,15 @@ describe("SimpleCocktail", function () {
     const cocktail = await SimpleCocktail.deploy(CocktailName);
     await cocktail.deployed();
 
-    const ingredient0 = util.stringToBytes32("1 pint Mexican lager");
-    const ingredient1 = util.stringToBytes32("2oz tomato juice");
+    const ingredient0 = stringToBytes32("1 pint Mexican lager");
+    const ingredient1 = stringToBytes32("2oz tomato juice");
     const setIngredientsTx = await cocktail.setIngredients([ingredient0, ingredient1]);
     await setIngredientsTx.wait(); // wait for tx mine
     // make sure initial value is set
     expect(await cocktail.getIngredient(1)).to.equal(ingredient1);
 
     // make sure that adding ingredients still works after initializing to a fixed length
-    const newIngredient0 = util.stringToBytes32("dash of salt");
+    const newIngredient0 = stringToBytes32("dash of salt");
     const setIngredientTx = await cocktail.setIngredient(1, newIngredient0);
     await setIngredientTx.wait();
     expect(await cocktail.getIngredient(1)).to.equal(newIngredient0);
@@ -82,8 +83,8 @@ describe("SimpleCocktail", function () {
     const cocktail = await SimpleCocktail.deploy(CocktailName);
     await cocktail.deployed();
 
-    const ingredient0 = util.stringToBytes32("1 pint Mexican lager");
-    const ingredient1 = util.stringToBytes32("2oz tomato juice");
+    const ingredient0 = stringToBytes32("1 pint Mexican lager");
+    const ingredient1 = stringToBytes32("2oz tomato juice");
     const setIngredientTx = await cocktail.setIngredients([ingredient0, ingredient1]);
     await setIngredientTx.wait(); // wait for tx mine
 
