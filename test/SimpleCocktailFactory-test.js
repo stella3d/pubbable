@@ -27,14 +27,14 @@ describe("SimpleCocktailFactory", function () {
         let receipt = await newCocktailTx.wait();
 
         let createEvent = receipt.events[0];
-        console.log(createEvent);
-
         let deployedAddress = createEvent.args[0];
         let instance = await Cocktail.attach(deployedAddress);
 
-        const deployedIngredients = await instance.getIngredients();
-        console.log(deployedIngredients);
-        expect(deployedIngredients).to.deep.equal(ingredients);
+        const cloneName = await instance.name();
+        const cloneIngredients = await instance.getIngredients();
+        console.log(cloneName, cloneIngredients);
+        expect(cloneName).to.equal(name);
+        expect(cloneIngredients).to.deep.equal(ingredients);
     });
   });
   
