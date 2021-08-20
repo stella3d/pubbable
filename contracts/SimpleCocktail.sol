@@ -1,22 +1,13 @@
 //SPDX-License-Identifier: Unlicense
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 
 import "hardhat/console.sol";
-
-contract Owned {
-    address owner;
-
-    modifier onlyOwner {
-        require(owner == msg.sender, "only owner can set name");
-        _;
-    }
-}
+import "./Owned.sol";
 
 contract SimpleCocktail is Owned {
     string public name;
     bytes32[] public ingredients;
 
-    // TODO - move into utility lib ?
     string indexError = "index must be less than length of ingredients";
 
     constructor(string memory _name) {
