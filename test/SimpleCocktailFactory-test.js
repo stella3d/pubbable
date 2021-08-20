@@ -22,7 +22,7 @@ describe("SimpleCocktailFactory", function () {
     // TODO - update after using proper clone factory
     it("Should deploy a new Cocktail contract", async function () {
         const name = "factory made contract 1";
-        const ingredients = util.stringArrayToBytes32(["i0", "i1", "i2"]);
+        const ingredients = util.stringToBytes32(["i0", "i1", "i2"]);
         let newCocktailTx = await factory.create(name, ingredients);
         let receipt = await newCocktailTx.wait();
 
