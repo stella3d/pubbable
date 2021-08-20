@@ -9,18 +9,6 @@ import "hardhat/console.sol";
 
 contract SimpleCocktailFactory is Owned {
 
-    // TODO - remove, adapt test to create() function
-    function deployNew(string memory _name, bytes32[] memory ingredients) 
-        public onlyOwner
-        returns(SimpleCocktail) 
-    {
-        SimpleCocktail cocktail = new SimpleCocktail(_name);
-        cocktail.setIngredients(ingredients);
-
-        console.log("deployed new Cocktail contract,", _name,  ", at:", address(cocktail));
-        return cocktail;
-    }
-
     address public libraryAddress;
 
     event CocktailCreated(address newThingAddress);
