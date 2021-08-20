@@ -32,7 +32,6 @@ describe("SimpleCocktailFactory", function () {
 
         const cloneName = await instance.name();
         const cloneIngredients = await instance.getIngredients();
-        console.log(cloneName, cloneIngredients);
         expect(cloneName).to.equal(name);
         expect(cloneIngredients).to.deep.equal(ingredients);
     });
