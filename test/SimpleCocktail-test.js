@@ -88,5 +88,7 @@ describe("SimpleCocktail", function () {
     await setIngredientTx.wait(); // wait for tx mine
 
     const ingredients = await cocktail.getIngredients();
+    expect(ingredients[0]).to.equal(ingredient0);
+    expect(ingredients[1]).to.equal(ingredient1);
   });
 });
