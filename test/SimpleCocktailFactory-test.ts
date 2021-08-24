@@ -28,15 +28,15 @@ describe("SimpleCocktailFactory", function () {
         let newCocktailTx = await factory.create(name, ingredients);
         let receipt = await newCocktailTx.wait();
 
+        // every Event logged within a transaction is available,
+        // this is how we get multiple return arguments
         let createEvent = receipt.events[0];
         let deployedAddress = createEvent.args[0];
         // get Cocktail type instance from deployed contract address
         let instance = await Cocktail.attach(deployedAddress);
 
-        const cloneName = await instance.name();
-        const cloneIngredients = await instance.getIngredients();
-        expect(cloneName).to.equal(name);
-        expect(cloneIngredients).to.deep.equal(ingredients);
+        expect(await instance.name()).to.equal(name);
+        expect(await instance.getIngredients()).to.deep.equal(ingredients);
     });
   });
   

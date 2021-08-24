@@ -18,7 +18,7 @@ contract SimpleCocktail is Owned {
 
     // TODO - add address of owner to init, since we won't get it from deployer
     function init(string memory _name, bytes32[] memory _ingredients) public {
-        console.log("cocktail INIT, name '%s', ingredient count: '%s'", name, _ingredients.length);
+        console.log("cocktail INIT, name '%s', ingredient count: '%s'", _name, _ingredients.length);
         name = _name;
         ingredients = _ingredients;
     }
