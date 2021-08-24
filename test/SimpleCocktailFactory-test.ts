@@ -1,13 +1,15 @@
-
-const { expect } = require("chai");
-const util = require("./util");
+import { expect } from "chai";
+import { Contract, ContractFactory } from "ethers";
+import { ethers } from "hardhat";
+import { stringToBytes32 } from "./util";
 
 describe("SimpleCocktailFactory", function () {
-    let Factory, Cocktail;
-    let factory, cocktail;
+    let Factory: ContractFactory; 
+    let factory: Contract;
+    let Cocktail: ContractFactory;
+    let cocktail: Contract;
 
     before(async function() {
-        //console.log(ethers);
         Cocktail = await ethers.getContractFactory("SimpleCocktail");
         Factory = await ethers.getContractFactory("SimpleCocktailFactory");
 
@@ -22,12 +24,13 @@ describe("SimpleCocktailFactory", function () {
     // TODO - update after using proper clone factory
     it("Should deploy a new Cocktail contract", async function () {
         const name = "factory made contract 1";
-        const ingredients = util.stringToBytes32(["i0", "i1", "i2"]);
+        const ingredients = stringToBytes32(["i0", "i1", "i2"]);
         let newCocktailTx = await factory.create(name, ingredients);
         let receipt = await newCocktailTx.wait();
 
         let createEvent = receipt.events[0];
         let deployedAddress = createEvent.args[0];
+        // get Cocktail type instance from deployed contract address
         let instance = await Cocktail.attach(deployedAddress);
 
         const cloneName = await instance.name();
