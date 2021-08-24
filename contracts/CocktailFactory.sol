@@ -2,18 +2,18 @@
 pragma solidity ^0.8.4;
 
 import "./Owned.sol";
-import "./SimpleCocktail.sol";
+import "./Cocktail.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 import "hardhat/console.sol";
 
 
-contract SimpleCocktailFactory is Owned {
+contract CocktailFactory is Owned {
 
     address public libraryAddress;
 
     event CocktailCreated(address newThingAddress);
 
-    // needs to be passed address of deployed SimpleCocktail contract
+    // needs to be passed address of deployed Cocktail contract
     constructor(address _libraryAddress) {
         libraryAddress = _libraryAddress;
         owner = msg.sender;
@@ -27,7 +27,7 @@ contract SimpleCocktailFactory is Owned {
         public
     {
         address clone = Clones.clone(libraryAddress);
-        SimpleCocktail(clone).init(_name, ingredients);
+        Cocktail(clone).init(_name, ingredients);
         emit CocktailCreated(clone);
     }
 }

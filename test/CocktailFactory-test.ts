@@ -3,15 +3,15 @@ import { Contract, ContractFactory } from "ethers";
 import { ethers } from "hardhat";
 import { stringToBytes32 } from "./util";
 
-describe("SimpleCocktailFactory", function () {
+describe("CocktailFactory", function () {
     let Factory: ContractFactory; 
     let factory: Contract;
     let Cocktail: ContractFactory;
     let cocktail: Contract;
 
     before(async function() {
-        Cocktail = await ethers.getContractFactory("SimpleCocktail");
-        Factory = await ethers.getContractFactory("SimpleCocktailFactory");
+        Cocktail = await ethers.getContractFactory("Cocktail");
+        Factory = await ethers.getContractFactory("CocktailFactory");
 
         cocktail = await Cocktail.deploy("Library Contract");
         await cocktail.deployed();
@@ -36,7 +36,9 @@ describe("SimpleCocktailFactory", function () {
         let instance = await Cocktail.attach(deployedAddress);
 
         expect(await instance.name()).to.equal(name);
-        expect(await instance.getIngredients()).to.deep.equal(ingredients);
+        expect(await instance.ingredients(0)).to.equal(ingredients[0]);
+        expect(await instance.ingredients(1)).to.equal(ingredients[1]);
+        expect(await instance.ingredients(2)).to.equal(ingredients[2]);
     });
   });
   

@@ -3,18 +3,18 @@ import { ContractFactory } from "ethers";
 import { ethers } from "hardhat";
 import { stringToBytes32 } from "./util";
 
-describe("SimpleCocktail", function () {
-  let SimpleCocktail: ContractFactory;
+describe("Cocktail", function () {
+  let Cocktail: ContractFactory;
 
   const CocktailName = "Michelada";
 
   before(async () => {
-    SimpleCocktail = await ethers.getContractFactory("SimpleCocktail");
+    Cocktail = await ethers.getContractFactory("Cocktail");
   });
 
   it("Should return the new name once it's changed", async function () {
     const startName = "Chelada";
-    const cocktail = await SimpleCocktail.deploy(startName);
+    const cocktail = await Cocktail.deploy(startName);
     await cocktail.deployed();
     expect(await cocktail.name()).to.equal(startName);
 
@@ -25,7 +25,7 @@ describe("SimpleCocktail", function () {
   });
 
   it("Should return the new ingredients after addIngredients()", async function () {
-    const cocktail = await SimpleCocktail.deploy(CocktailName);
+    const cocktail = await Cocktail.deploy(CocktailName);
     await cocktail.deployed();
 
     const addedIngredient = stringToBytes32("Mexican lager");
@@ -35,7 +35,7 @@ describe("SimpleCocktail", function () {
   });
 
   it("Should return the new ingredients after setIngredients()", async function () {
-    const cocktail = await SimpleCocktail.deploy(CocktailName);
+    const cocktail = await Cocktail.deploy(CocktailName);
     await cocktail.deployed();
 
     const ingredient0 = stringToBytes32("1 pint Mexican lager");
@@ -56,7 +56,7 @@ describe("SimpleCocktail", function () {
   });
 
   it("Should return a new ingredient at the right index after setIngredient()", async function () {
-    const cocktail = await SimpleCocktail.deploy(CocktailName);
+    const cocktail = await Cocktail.deploy(CocktailName);
     await cocktail.deployed();
 
     const ingredient0 = stringToBytes32("1 pint Mexican lager");
@@ -75,7 +75,7 @@ describe("SimpleCocktail", function () {
 
 
   it("Should allow retrieving the ingredient list as a bytes32[]", async function () {
-    const cocktail = await SimpleCocktail.deploy(CocktailName);
+    const cocktail = await Cocktail.deploy(CocktailName);
     await cocktail.deployed();
 
     const ingredient0 = stringToBytes32("1 pint Mexican lager");

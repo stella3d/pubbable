@@ -4,14 +4,14 @@ pragma solidity ^0.8.4;
 import "hardhat/console.sol";
 import "./Owned.sol";
 
-contract SimpleCocktail is Owned {
+contract Cocktail is Owned {
     string public name;
     bytes32[] public ingredients;
 
     string indexError = "index must be less than length of ingredients";
 
     constructor(string memory _name) {
-        console.log("Deploying a SimpleCocktail:", _name);
+        console.log("Deploying a Cocktail:", _name);
         owner = msg.sender;
         name = _name;
     }
