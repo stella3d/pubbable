@@ -33,17 +33,8 @@ contract SimpleCocktail is Owned {
         ingredients.push(_ingredient);
     }
 
-    function getIngredients() public view returns(bytes32[] memory) {
-        return ingredients;
-    }
-
     function setIngredients(bytes32[] memory _ingredients) public onlyOwner {
         ingredients = _ingredients;
-    }
-
-    function getIngredient(uint index) public view returns(bytes32) {
-        require(index < ingredients.length, indexError);
-        return ingredients[index];
     }
 
     function setIngredient(uint256 index, bytes32 value) public {

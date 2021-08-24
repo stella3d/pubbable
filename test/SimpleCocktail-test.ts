@@ -28,13 +28,10 @@ describe("SimpleCocktail", function () {
     const cocktail = await SimpleCocktail.deploy(CocktailName);
     await cocktail.deployed();
 
-    // check out-of-bounds index guard 
-    await expect(cocktail.getIngredient(0)).to.be.revertedWith("index must be less than length of ingredients");
-
     const addedIngredient = stringToBytes32("Mexican lager");
     const addIngredientTx = await cocktail.addIngredient(addedIngredient);
     await addIngredientTx.wait();
-    expect(await cocktail.getIngredient(0)).to.equal(addedIngredient);
+    expect(await cocktail.ingredients(0)).to.equal(addedIngredient);
   });
 
   it("Should return the new ingredients after setIngredients()", async function () {
@@ -47,17 +44,15 @@ describe("SimpleCocktail", function () {
     const setIngredientTx = await cocktail.setIngredients([ingredient0, ingredient1, ingredient2]);
     await setIngredientTx.wait(); // wait for tx mine
 
-    expect(await cocktail.getIngredient(0)).to.equal(ingredient0);
-    expect(await cocktail.getIngredient(1)).to.equal(ingredient1);
-    expect(await cocktail.getIngredient(2)).to.equal(ingredient2);
-    // make sure only 3 string slots were allocated 
-    await expect(cocktail.getIngredient(3)).to.be.revertedWith("index must be less than length of ingredients");
+    expect(await cocktail.ingredients(0)).to.equal(ingredient0);
+    expect(await cocktail.ingredients(1)).to.equal(ingredient1);
+    expect(await cocktail.ingredients(2)).to.equal(ingredient2);
 
     // make sure that adding ingredients still works after initializing to a fixed length
     const ingredient3 = stringToBytes32("dash of salt");
     const addIngredientTx = await cocktail.addIngredient(ingredient3);
     await addIngredientTx.wait();
-    expect(await cocktail.getIngredient(3)).to.equal(ingredient3);
+    expect(await cocktail.ingredients(3)).to.equal(ingredient3);
   });
 
   it("Should return a new ingredient at the right index after setIngredient()", async function () {
@@ -69,13 +64,13 @@ describe("SimpleCocktail", function () {
     const setIngredientsTx = await cocktail.setIngredients([ingredient0, ingredient1]);
     await setIngredientsTx.wait(); // wait for tx mine
     // make sure initial value is set
-    expect(await cocktail.getIngredient(1)).to.equal(ingredient1);
+    expect(await cocktail.ingredients(1)).to.equal(ingredient1);
 
     // make sure that adding ingredients still works after initializing to a fixed length
-    const newIngredient0 = stringToBytes32("dash of salt");
-    const setIngredientTx = await cocktail.setIngredient(1, newIngredient0);
+    const newIngredient1 = stringToBytes32("dash of salt");
+    const setIngredientTx = await cocktail.setIngredient(1, newIngredient1);
     await setIngredientTx.wait();
-    expect(await cocktail.getIngredient(1)).to.equal(newIngredient0);
+    expect(await cocktail.ingredients(1)).to.equal(newIngredient1);
   });
 
 
@@ -88,8 +83,8 @@ describe("SimpleCocktail", function () {
     const setIngredientTx = await cocktail.setIngredients([ingredient0, ingredient1]);
     await setIngredientTx.wait(); // wait for tx mine
 
-    const ingredients = await cocktail.getIngredients();
-    expect(ingredients[0]).to.equal(ingredient0);
-    expect(ingredients[1]).to.equal(ingredient1);
+    //const ingredients = await cocktail.getIngredients();
+    expect(await cocktail.ingredients(0)).to.equal(ingredient0);
+    expect(await cocktail.ingredients(1)).to.equal(ingredient1);
   });
 });
