@@ -34,6 +34,7 @@ contract CocktailTender is ERC721 {
     // called before any token transfer, including minting and burning
     function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal override view {
         if(from == address(0)) {
+            // we're trying to mint a new token - check if allowed by owner's governance rules
             GovernanceParameters memory toGov = ownerGovernance[to];
             require(_isPastMinChangeTime(toGov), "Cocktail: minimum change duration has not elapsed");
             require(_isUnderMaxCocktailCount(to, toGov), "Cocktail: mint 'to' address already has max balance");
