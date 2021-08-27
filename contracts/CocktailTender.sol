@@ -10,8 +10,9 @@ contract CocktailTender is ERC721 {
         uint256 lastCocktailChangeTime;
     }
 
-    // Mapping from token ID ingredients
+    // map from token ID to cocktail ingredients list
     mapping(uint256 => bytes32[]) private tokenIngredients;
+    // map from minter address to governance params
     mapping(address => GovernanceParameters) private ownerGovernance;
 
     // bar is an owner address
