@@ -4,15 +4,20 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract CocktailTender is ERC721 {
 
+    struct Cocktail {
+        string name;
+        bytes32[] ingredients;
+    }
+        
     struct GovernanceParameters {
         uint16 maxCocktailCount;
         uint32 minTimeBetweenChanges;
         uint256 lastCocktailChangeTime;
     }
-
-    // map from token ID to cocktail ingredients list
-    mapping(uint256 => bytes32[]) private tokenIngredients;
-    // map from minter address to governance params
+    
+    // map from token ID to cocktail data
+    mapping(uint256 => Cocktail) public cocktails;
+    // map from mint address to governance params
     mapping(address => GovernanceParameters) private ownerGovernance;
 
     // bar is an owner address
