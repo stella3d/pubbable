@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 contract Pubbable is ERC1155 {
 
     struct Cocktail {
-        string name;
+        bytes32 name;
         bytes32[] ingredients;
     }
 
@@ -21,8 +21,7 @@ contract Pubbable is ERC1155 {
 
     // map from fungible token ID to governance rules
     mapping(uint256 => GovernanceParameters) private ownerGovernance;
-    // assuming 1 gov token => 1 managing address for now, this moves complexity out - 
-    // 1 person can have multiple addresses, 1 address can be multi-sig, etc.
+    // 1 gov token => 1 or more managing addresses, but only 1 token per address
     mapping(address => uint256) private addrToManagedGovToken;
 
     // NFT cocktail token IDs must have LSB=1 (odds)
@@ -31,17 +30,40 @@ contract Pubbable is ERC1155 {
     uint256 public barIdCounter = 2;
 
     // TODO - real metadata url / learn how metadata standard works
-    constructor() ERC1155("https://fake.metadata.com/replace_me") {
+    constructor() ERC1155("https://fake.metadata.com/replace_me") { }
 
-    }
-
-    // call this to create a new token type for a new bar
-    function addNewBar(bytes memory name, uint32 initialSupply) external payable {
+    // call this to create a new fungible governance token type for a new bar
+    function newBar(uint32 initialTokenSupply) 
+        external payable 
+    {
         require(addrToManagedGovToken[msg.sender] == 0, "address already manages a token");
         
-        barIdCounter += 2;  // to keep LSB the same, increment by 2
+        barIdCounter += 2;  // incrementing by 2 keeps LSB the same
         addrToManagedGovToken[msg.sender] = barIdCounter;
-        _mint(msg.sender, barIdCounter, initialSupply, name);
+        _mint(msg.sender, barIdCounter, initialTokenSupply, "");
+    }
+
+    // call this to create a cocktail for a bar
+    function newCocktail(address to, uint256 minterTokenId, bytes32 _name, bytes32[] calldata _ingredients) 
+        external payable 
+    {
+        require(
+            addrToManagedGovToken[msg.sender] == minterTokenId, 
+            "sender does not manage minting token"
+        );
+
+        GovernanceParameters memory gov = ownerGovernance[minterTokenId];
+        _requireMintAllowedByGov(gov);
+        // set last cocktail change time for this minter
+        gov.lastCocktailChangeTime = block.timestamp;
+        ownerGovernance[minterTokenId] = gov;
+
+        // incrementing by 2 keeps LSB the same
+        cocktailIdCounter += 2;
+        // store text data for this cocktail  
+        cocktails[cocktailIdCounter] = Cocktail(_name, _ingredients);
+        // each cocktail has a unique token ID (an odd number) & supply of 1
+        _mint(to, cocktailIdCounter, 1, "");
     }
 
     // makes all pre-mint checks required of governance
@@ -57,13 +79,5 @@ contract Pubbable is ERC1155 {
             gov.currentCocktailCount < gov.maxCocktailCount, 
             "mint address has max cocktail balance"
         );
-    }
-
-    function _beforeCocktailMint(uint256 minterGovTokenId) internal {
-            GovernanceParameters memory gov = ownerGovernance[minterGovTokenId];
-            _requireMintAllowedByGov(gov);
-            // set last cocktail change time for this owner
-            gov.lastCocktailChangeTime = block.timestamp;
-            ownerGovernance[minterGovTokenId] = gov;
     }
 }
