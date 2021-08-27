@@ -22,22 +22,33 @@ contract CocktailTender is ERC721 {
     // DAO tokens - cloned ERC-20 with variables change
     constructor() ERC721("CocktailTender", "COCKT") { }
 
-    function _isPastMinChangeTime (GovernanceParameters memory govParams) internal view returns(bool) {
-        uint elapsed = block.timestamp - govParams.lastCocktailChangeTime;
-        return elapsed > govParams.minTimeBetweenChanges;
+    // makes all pre-mint checks required of governance
+    function _requireMintAllowedByGov(address owner, GovernanceParameters memory gov) internal view {
+        // check if owner has made a change too recently
+        uint sinceChange = block.timestamp - gov.lastCocktailChangeTime;
+        require(sinceChange > gov.minTimeBetweenChanges, "Cocktail: minimum change duration has not elapsed");
+        // check if owner already has max cocktails
+        require(balanceOf(owner) < gov.maxCocktailCount, "Cocktail: mint 'to' address already has max balance");
     }
 
-    function _isUnderMaxCocktailCount (address owner, GovernanceParameters memory govParams) internal view returns(bool) {
-        return balanceOf(owner) < govParams.maxCocktailCount;
+    function _beforeMint(address mintTo) internal {
+            GovernanceParameters memory gov = ownerGovernance[mintTo];
+            _requireMintAllowedByGov(mintTo, gov);
+            // set last cocktail change time for this owner
+            gov.lastCocktailChangeTime = block.timestamp;
+            ownerGovernance[mintTo] = gov;
+    }
+
+    function isMintAllowed(address mintTo) public view returns(bool) {
+        _requireMintAllowedByGov(mintTo, ownerGovernance[mintTo]);
+        return true;
     }
     
     // called before any token transfer, including minting and burning
-    function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal override view {
+    function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal override {
         if(from == address(0)) {
             // we're trying to mint a new token - check if allowed by owner's governance rules
-            GovernanceParameters memory toGov = ownerGovernance[to];
-            require(_isPastMinChangeTime(toGov), "Cocktail: minimum change duration has not elapsed");
-            require(_isUnderMaxCocktailCount(to, toGov), "Cocktail: mint 'to' address already has max balance");
+            _beforeMint(to);
         }
     }
 }
