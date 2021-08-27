@@ -14,31 +14,34 @@ contract Pubbable is ERC1155 {
         
     struct GovernanceParameters {
         uint16 maxCocktailCount;
+        uint16 currentCocktailCount;
         uint32 minTimeBetweenChanges;
         uint256 lastCocktailChangeTime;
     }
 
-    // map from bar's fungible token ID to bar's governance params
+    // map from fungible token ID to governance rules
     mapping(uint256 => GovernanceParameters) private ownerGovernance;
+    // assuming 1 gov token => 1 managing address for now, this moves complexity out - 
+    // 1 person can have multiple addresses, 1 address can be multi-sig, etc.
+    mapping(address => uint256) private addrToManagedGovToken;
 
-    // assuming 1 gov token => 1 managing address for now,
-    // kicks complexity of multiple managers to multi-sig wallets etc.
-    mapping(address => uint256) private govTokenOwners;
-
-    uint256 public constant BASE_COCKTAIL_TID = 0;
-
-    uint256 public barCount;
-    uint128 public cocktailCount;
+    // NFT cocktail token IDs must have LSB=1 (odds)
+    uint256 public cocktailIdCounter = 1;
+    // fungible per-bar gov tokens must have LSB=0 (evens)
+    uint256 public barIdCounter = 2;
 
     // TODO - real metadata url / learn how metadata standard works
-    constructor() ERC1155("https://fake.metadata.com/replace_me") { 
+    constructor() ERC1155("https://fake.metadata.com/replace_me") {
+
     }
 
     // call this to create a new token type for a new bar
     function addNewBar(bytes memory name, uint32 initialSupply) external payable {
-        uint256 newBarTokenId = barCount++;
-        govTokenOwners[msg.sender] = newBarTokenId;
-        _mint(msg.sender, newBarTokenId, initialSupply, name);
+        require(addrToManagedGovToken[msg.sender] == 0, "address already manages a token");
+        
+        barIdCounter += 2;  // to keep LSB the same, increment by 2
+        addrToManagedGovToken[msg.sender] = barIdCounter;
+        _mint(msg.sender, barIdCounter, initialSupply, name);
     }
 
     // makes all pre-mint checks required of governance
