@@ -45,49 +45,25 @@ contract Pubbable is ERC1155 {
     }
 
     // makes all pre-mint checks required of governance
-    function _requireMintAllowedByGov(address owner, GovernanceParameters memory gov) internal view {
+    function _requireMintAllowedByGov(GovernanceParameters memory gov) internal view {
         // check if owner has made a change too recently
         uint sinceChange = block.timestamp - gov.lastCocktailChangeTime;
         require(
             sinceChange > gov.minTimeBetweenChanges, 
-            "Cocktail: minimum change duration has not elapsed"
+            "minimum change duration not elapsed"
         );
         // check if owner already has max cocktails
         require(
-            balanceOf(owner, BASE_COCKTAIL_TID) < gov.maxCocktailCount, 
-            "Cocktail: mint 'to' address already has max cocktail NFT balance"
+            gov.currentCocktailCount < gov.maxCocktailCount, 
+            "mint address has max cocktail balance"
         );
     }
 
-    function _beforeCocktailMint(address mintTo, uint256 minterGovTokenId) internal {
+    function _beforeCocktailMint(uint256 minterGovTokenId) internal {
             GovernanceParameters memory gov = ownerGovernance[minterGovTokenId];
-            _requireMintAllowedByGov(mintTo, gov);
+            _requireMintAllowedByGov(gov);
             // set last cocktail change time for this owner
             gov.lastCocktailChangeTime = block.timestamp;
             ownerGovernance[minterGovTokenId] = gov;
-    }
-
-    function _beforeTokenTransfer(
-        address operator,
-        address from,
-        address to,
-        uint256[] memory ids,
-        uint256[] memory amounts,
-        bytes memory data
-    ) internal override {
-        if(from == address(0)) {
-            // we're trying to mint something
-            /*
-            uint256 minterGovTokenId = 
-            for (uint256 i = 0; i < ids.length; i++) {
-                uint256 tokenId = ids[i];
-                if(tokenId == BASE_COCKTAIL_TID) {
-                    //before minting new cocktail NFT, check if allowed by owner's governance rules
-                    _beforeCocktailMint(to, );
-                }
-            }
-            */
-
-        }
     }
 }
