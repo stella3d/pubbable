@@ -43,14 +43,11 @@ contract Pubbable is ERC1155 {
         _mint(msg.sender, barIdCounter, initialTokenSupply, "");
     }
 
-    // call this to create a cocktail for a bar
+    // call this to create a cocktail NFT for a bar
     function newCocktail(address to, uint256 minterTokenId, bytes32 _name, bytes32[] calldata _ingredients) 
         external payable 
     {
-        require(
-            addrToManagedGovToken[msg.sender] == minterTokenId, 
-            "sender does not manage minting token"
-        );
+        _requireSenderManagesToken(minterTokenId);
 
         GovernanceParameters memory gov = ownerGovernance[minterTokenId];
         _requireMintAllowedByGov(gov);
@@ -66,6 +63,13 @@ contract Pubbable is ERC1155 {
         _mint(to, cocktailIdCounter, 1, "");
     }
 
+    // use to allow additional addresses to mint on behalf of a bar / governance token
+    function addBarTokenManager(uint256 token, address manager) external payable {
+        _requireSenderManagesToken(token);
+        addrToManagedGovToken[manager] = token;
+    }
+    // TODO - removeBarTokenManager() function / mechanism for deciding removal of manager 
+
     // makes all pre-mint checks required of governance
     function _requireMintAllowedByGov(GovernanceParameters memory gov) internal view {
         // check if owner has made a change too recently
@@ -78,6 +82,13 @@ contract Pubbable is ERC1155 {
         require(
             gov.currentCocktailCount < gov.maxCocktailCount, 
             "mint address has max cocktail balance"
+        );
+    }
+
+    function _requireSenderManagesToken(uint256 token) internal view {
+        require(
+            addrToManagedGovToken[msg.sender] == token, 
+            "sender does not manage token"
         );
     }
 }
