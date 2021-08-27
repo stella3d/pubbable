@@ -24,7 +24,7 @@ contract CocktailTender is ERC721 {
 
     function _isPastMinChangeTime (GovernanceParameters memory govParams) internal view returns(bool) {
         uint elapsed = block.timestamp - govParams.lastCocktailChangeTime;
-        return elapsed > govParams.maxCocktailCount;
+        return elapsed > govParams.minTimeBetweenChanges;
     }
 
     function _isUnderMaxCocktailCount (address owner, GovernanceParameters memory govParams) internal view returns(bool) {
