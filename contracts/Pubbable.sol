@@ -57,7 +57,7 @@ contract Pubbable is ERC1155 {
             "mint address has max cocktail balance"
         );
 
-        // set last cocktail change time for this minter
+        // set last cocktail change time for minting bar
         gov.lastCocktailChangeTime = block.timestamp;
         ownerGovernance[minterTokenId] = gov;
 
