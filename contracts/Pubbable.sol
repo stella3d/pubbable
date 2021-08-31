@@ -68,12 +68,13 @@ contract Pubbable is ERC1155 {
         _mint(to, cocktailIdCounter, 1, "");
     }
 
+    // TODO - consider if we need a more advanced permission model for token managers
     // use to allow additional addresses to mint on behalf of a bar / governance token
     function addBarTokenManager(uint256 token, address manager) external payable {
         _requireSenderManagesToken(token);
         addrToManagedGovToken[manager] = token;
     }
-    // TODO - removeBarTokenManager() function / mechanism for deciding removal of manager 
+    // TODO - removeBarTokenManager() function
 
     // TODO - this should be removed when we find another way for tests to check this
     function getLastCocktailMintTime(uint256 barTokenId) 
