@@ -75,11 +75,17 @@ contract Pubbable is ERC1155 {
     // TODO - removeBarTokenManager() function / mechanism for deciding removal of manager 
 
     // TODO - this should be removed when we find another way for tests to check this
-    function getLastCocktailMintTime(uint256 barTokenId) external view returns(uint256) 
+    function getLastCocktailMintTime(uint256 barTokenId) 
+        external view returns(uint256) 
     {
-        // TODO - replace with check for if caller holds any of the gov token
-        _requireSenderManagesToken(barTokenId);
         return ownerGovernance[barTokenId].lastCocktailChangeTime;
+    }
+
+    // TODO - this should be removed when we find another way for tests to check this
+    function getCurrentCocktailCount(uint256 barTokenId) 
+        external view returns(uint16) 
+    {
+        return ownerGovernance[barTokenId].currentCocktailCount;
     }
 
     function _requireSenderManagesToken(uint256 token) internal view {

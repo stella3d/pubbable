@@ -59,12 +59,14 @@ describe("Pubbable", function () {
 
     describe("mintCocktail()", function() {
         let txReceipt: any, mintEvent: any, mintArgs : any;
-        let lastCocktailId: BigNumber;
+        let lastCocktailId: BigNumber, lastBarId: BigNumber;
         let toAddress: BigNumber
+        let previousCocktailCount: number;
 
         before(async function() {
             lastCocktailId = await pubbable.cocktailIdCounter();
-            const lastBarId = await pubbable.barIdCounter();
+            lastBarId = await pubbable.barIdCounter();
+            previousCocktailCount = await pubbable.getCurrentCocktailCount(lastBarId);
             // TODO - vary the 'to' address from the initial message sender
             toAddress = senderAddress
             // run the mint function here and test effects in tests
@@ -94,11 +96,15 @@ describe("Pubbable", function () {
         });
 
         it("resets the minting bar's last cocktail mint time", async function () {
-            const lastBarId: BigNumber = await pubbable.barIdCounter();
             const mintTime = await pubbable.getLastCocktailMintTime(lastBarId);
             // TODO - replace this check with one for exact equality with the block's timestamp,
             // not sure how to get that in TS yet
             expect(mintTime.toNumber()).to.be.greaterThan(0);
+        });
+
+        it("increases the bar's current cocktail count by 1", async function () {
+            const newCount = await pubbable.getCurrentCocktailCount(lastBarId);
+            expect(newCount).to.be.equal(previousCocktailCount + 1);
         });
     });
   });
