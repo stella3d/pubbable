@@ -61,9 +61,8 @@ contract Pubbable is ERC1155 {
         gov.lastCocktailChangeTime = block.timestamp;
         ownerGovernance[minterTokenId] = gov;
 
-        // incrementing by 2 keeps LSB the same
         cocktailIdCounter += 2;
-        // each cocktail has a unique token ID (an odd number) & supply of 1
+        // cocktails having a supply of 1 is what makes them NFTs
         _mint(to, cocktailIdCounter, 1, "");
     }
 
