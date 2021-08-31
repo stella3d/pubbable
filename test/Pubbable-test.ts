@@ -17,6 +17,7 @@ describe("Pubbable", function () {
         const initialSupply = 21000;
         let txReceipt: any, mintEvent: any, mintArgs : any;
         let lastCreatedBarId: BigNumber;
+        let senderAddress: any;
 
         before(async function() {
             lastCreatedBarId = await pubbable.barIdCounter();
@@ -25,6 +26,7 @@ describe("Pubbable", function () {
             txReceipt = await newBarTx.wait();
             mintEvent = txReceipt.events[0];
             mintArgs = mintEvent.args;
+            senderAddress = mintArgs[0];
         });
         
         it("mints with the expected new token ID", async function () {
@@ -38,12 +40,15 @@ describe("Pubbable", function () {
             expect(supplyArg).to.equal(initialSupply);
         });
 
-        it("transfers from 0 address", async function () {
-            expect(mintArgs[1]).to.equal(ethers.constants.AddressZero);
+        it("gives the minter the whole initial supply", async function () {
+            const lastBarId: BigNumber = await pubbable.barIdCounter();
+            const balance = await pubbable.balanceOf(senderAddress, lastBarId);
+            expect(balance).to.equal(initialSupply);
         });
 
-        it("has the same operator & to address arguments", async function () {
+        it("has same operator & to arguments, transfers from 0 address", async function () {
             expect(mintArgs[0]).to.equal(mintArgs[2]);
+            expect(mintArgs[1]).to.equal(ethers.constants.AddressZero);
         });
     });
   });
