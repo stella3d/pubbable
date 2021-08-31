@@ -40,9 +40,21 @@ contract Pubbable is ERC1155 {
     // call this to create a cocktail NFT for a bar
     function mintCocktail(address to, uint256 minterTokenId) external payable {
         _requireSenderManagesToken(minterTokenId);
-
+        
         GovernanceParameters memory gov = ownerGovernance[minterTokenId];
-        _requireMintAllowedByGov(gov);
+        // check if minting bar has made a change too recently
+        uint sinceChange = block.timestamp - gov.lastCocktailChangeTime;
+        require(
+            sinceChange > gov.minTimeBetweenChanges, 
+            "minimum change duration not elapsed"
+        );
+        // check if minting bar already has max cocktails
+        require(
+            gov.maxCocktailCount == 0 ||    // if no max has been set, allow mint
+            gov.currentCocktailCount < gov.maxCocktailCount, 
+            "mint address has max cocktail balance"
+        );
+
         // set last cocktail change time for this minter
         gov.lastCocktailChangeTime = block.timestamp;
         ownerGovernance[minterTokenId] = gov;
@@ -60,34 +72,15 @@ contract Pubbable is ERC1155 {
     }
     // TODO - removeBarTokenManager() function / mechanism for deciding removal of manager 
 
-    function getLastCocktailMintTime(uint256 barTokenId) 
-        external view returns(uint256) 
+    // TODO - this should be removed when we find another way for tests to check this
+    function getLastCocktailMintTime(uint256 barTokenId) external view returns(uint256) 
     {
         // TODO - replace with check for if caller holds any of the gov token
         _requireSenderManagesToken(barTokenId);
         return ownerGovernance[barTokenId].lastCocktailChangeTime;
     }
 
-    // makes all pre-mint checks required of governance
-    function _requireMintAllowedByGov(GovernanceParameters memory gov) internal view {
-        // check if owner has made a change too recently
-        uint sinceChange = block.timestamp - gov.lastCocktailChangeTime;
-        require(
-            sinceChange > gov.minTimeBetweenChanges, 
-            "minimum change duration not elapsed"
-        );
-        // check if owner already has max cocktails
-        require(
-            gov.maxCocktailCount == 0 ||    // if no max has been set, allow mint
-            gov.currentCocktailCount < gov.maxCocktailCount, 
-            "mint address has max cocktail balance"
-        );
-    }
-
     function _requireSenderManagesToken(uint256 token) internal view {
-        require(
-            addrToManagedGovToken[msg.sender] == token, 
-            "sender does not manage token"
-        );
+        require(addrToManagedGovToken[msg.sender] == token, "sender does not manage token");
     }
 }
