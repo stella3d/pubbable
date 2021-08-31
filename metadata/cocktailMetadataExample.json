@@ -1,0 +1,15 @@
+{
+	"name": "Dark & Stormy",
+	"description": "Cocktail by FAKE BAR",
+	"image": "https:\/\/pubbable-cdn.com\/images\/{id}.png",
+	"properties": {
+		"ingredients": {
+			"name": "Ingredients",
+			"value": [
+                "2 shots dark rum",
+                "12z (1 can) ginger beer",
+                "1/4 lime, squeezed"
+            ]
+		}
+	}
+}
