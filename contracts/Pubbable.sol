@@ -33,6 +33,7 @@ contract Pubbable is ERC1155 {
     constructor() ERC1155("https://fake.metadata.com/replace_me") { }
 
     // call this to create a new fungible governance token type for a new bar
+    // TODO: add address as explicit argument
     function mintBar(uint32 initialTokenSupply) 
         external payable 
     {
@@ -45,7 +46,7 @@ contract Pubbable is ERC1155 {
     }
 
     // call this to create a cocktail NFT for a bar
-    function newCocktail(address to, uint256 minterTokenId, bytes32 _name, bytes32[] calldata _ingredients) 
+    function mintCocktail(address to, uint256 minterTokenId, bytes32 _name, bytes32[] calldata _ingredients) 
         external payable 
     {
         _requireSenderManagesToken(minterTokenId);
@@ -81,6 +82,7 @@ contract Pubbable is ERC1155 {
         );
         // check if owner already has max cocktails
         require(
+            gov.maxCocktailCount == 0 ||    // if no max has been set, allow mint
             gov.currentCocktailCount < gov.maxCocktailCount, 
             "mint address has max cocktail balance"
         );
