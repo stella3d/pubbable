@@ -1,5 +1,15 @@
 {
 	"name": "STUD CITY",
 	"description": "fake SF bar for gay degenerates",
-	"image": "https:\/\/pubbable-cdn.com\/images\/{id}.png"
+	"image": "https:\/\/pubbable-cdn.com\/images\/{id}.png",
+	"properties": {
+		"ingredients": {
+			"name": "Ingredients",
+			"value": [
+                "Grey Goose",
+                "Super Dank Rum",
+                "Poppers (double scorpio brand)"
+            ]
+		}
+	}
 }
