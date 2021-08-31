@@ -42,7 +42,7 @@ describe("Pubbable", function () {
             expect(mintArgs[1]).to.equal(ethers.constants.AddressZero);
         });
 
-        it("operator & to address arguments should be the same", async function () {
+        it("has the same operator & to address arguments", async function () {
             expect(mintArgs[0]).to.equal(mintArgs[2]);
         });
     });
