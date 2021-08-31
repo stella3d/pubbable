@@ -1,6 +1,8 @@
 # Pubbable
 
-a DAO-ish thing for bars
+a DAO-ish thing for bars & cocktails.
+
+Bar operators can register a bar & mint cocktail NFTs associated with it.
 
 ## Token Structure
 
@@ -22,6 +24,14 @@ Things governance token holders can vote on will include:
 * which cocktails stay on the menu
 * how many cocktails the bar can have
 * how often cocktails can be changed
+
+
+## Minting Functions
+
+Pubbable is a [single contract](./contracts/Pubbable.sol) with 2 external minting functions:
+  * `mintBar()` registers a new bar & creates a governance token
+  * `mintCocktail()` mints a new Cocktail NFT associated to a registered bar 
+
 
 ## Metadata
 
