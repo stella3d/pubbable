@@ -37,9 +37,7 @@ contract Pubbable is ERC1155 {
     }
 
     // call this to create a cocktail NFT for a bar
-    function mintCocktail(address to, uint256 minterTokenId) 
-        external payable 
-    {
+    function mintCocktail(address to, uint256 minterTokenId) external payable {
         _requireSenderManagesToken(minterTokenId);
 
         GovernanceParameters memory gov = ownerGovernance[minterTokenId];
