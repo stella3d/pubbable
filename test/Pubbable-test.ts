@@ -85,8 +85,8 @@ describe("Pubbable", function () {
         });
 
         it("gives the minter a balance of 1 in the new token", async function () {
-            const lastCocktailId: BigNumber = await pubbable.cocktailIdCounter();
-            const balance = await pubbable.balanceOf(senderAddress, lastCocktailId);
+            const newCocktailId: BigNumber = await pubbable.cocktailIdCounter();
+            const balance = await pubbable.balanceOf(senderAddress, newCocktailId);
             expect(balance).to.equal(1);
         });
 
