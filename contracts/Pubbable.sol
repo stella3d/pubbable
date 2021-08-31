@@ -25,14 +25,13 @@ contract Pubbable is ERC1155 {
     mapping(uint256 => GovernanceParameters) private ownerGovernance;
     // 1 gov token => 1 or more managing addresses, but only 1 token per address
     mapping(address => uint256) private addrToManagedGovToken;
-
+    
     // NFT cocktail token IDs must have LSB=1 (odds)
     uint256 public cocktailIdCounter = 1;
     // fungible per-bar gov tokens must have LSB=0 (evens)
     uint256 public barIdCounter = 2;
 
-    // TODO - real metadata url / learn how metadata standard works
-    constructor() ERC1155("https://fake.metadata.com/replace_me") { }
+    constructor(string memory baseMetaDataUri) ERC1155(baseMetaDataUri) { }
 
     // call this to create a new fungible governance token type for a new bar
     // TODO: add address as explicit argument

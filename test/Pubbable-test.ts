@@ -9,9 +9,11 @@ describe("Pubbable", function () {
 
     let senderAddress: BigNumber;
 
+    const testMetadataUri = "https://pubbable.xyz/{id}.json";
+
     before(async function() {
         Pubbable = await ethers.getContractFactory("Pubbable");
-        pubbable = await Pubbable.deploy();
+        pubbable = await Pubbable.deploy(testMetadataUri);
         await pubbable.deployed();
     });
 
