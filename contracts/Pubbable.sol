@@ -12,7 +12,7 @@ contract Pubbable is ERC1155 {
     }
 
     // map from fungible token ID to governance rules
-    mapping(uint256 => GovernanceParameters) private ownerGovernance;
+    mapping(uint256 => GovernanceParameters) private tokenGovernance;
     // 1 gov token => 1 or more managing addresses, but only 1 token per address
     mapping(address => uint256) private addrToManagedGovToken;
     
@@ -43,7 +43,7 @@ contract Pubbable is ERC1155 {
     {
         _requireSenderManagesToken(minterTokenId);
 
-        GovernanceParameters memory gov = ownerGovernance[minterTokenId];
+        GovernanceParameters memory gov = tokenGovernance[minterTokenId];
         // check if minting bar has made a change too recently
         uint sinceChange = block.timestamp - gov.lastCocktailChangeTime;
         require(
@@ -60,7 +60,7 @@ contract Pubbable is ERC1155 {
         // update minting bar's cocktail governance data
         gov.currentCocktailCount += 1;
         gov.lastCocktailChangeTime = block.timestamp;
-        ownerGovernance[minterTokenId] = gov;
+        tokenGovernance[minterTokenId] = gov;
 
         cocktailIdCounter += 2;
         // cocktails having a supply of 1 is what makes them NFTs
@@ -78,14 +78,14 @@ contract Pubbable is ERC1155 {
     function getLastCocktailMintTime(uint256 barTokenId) 
         external view returns(uint256) 
     {
-        return ownerGovernance[barTokenId].lastCocktailChangeTime;
+        return tokenGovernance[barTokenId].lastCocktailChangeTime;
     }
 
     // TODO - this should be removed when we find another way for tests to check this
     function getCurrentCocktailCount(uint256 barTokenId) 
         external view returns(uint16) 
     {
-        return ownerGovernance[barTokenId].currentCocktailCount;
+        return tokenGovernance[barTokenId].currentCocktailCount;
     }
 
     function _requireSenderManagesToken(uint256 token) internal view {
