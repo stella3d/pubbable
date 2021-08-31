@@ -53,8 +53,6 @@ describe("Pubbable", function () {
             expect(mintArgs[0]).to.equal(mintArgs[2]);
             expect(mintArgs[1]).to.equal(ethers.constants.AddressZero);
         });
-
-
     });
 
     describe("mintCocktail()", function() {
@@ -101,8 +99,6 @@ describe("Pubbable", function () {
         it("resets the minting bar's last cocktail mint time", async function () {
             const lastBarId: BigNumber = await pubbable.barIdCounter();
             const mintTime = await pubbable.getLastCocktailMintTime(lastBarId);
-            console.log(mintTime);
-
             // TODO - replace this check with one for exact equality with the block's timestamp,
             // not sure how to get that in TS yet
             expect(mintTime.toNumber()).to.be.greaterThan(0);
