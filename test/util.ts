@@ -12,3 +12,9 @@ export function bytes32ToString (input: string | Bytes | BytesLike[])
 : string | string[] {
   return Array.isArray(input) ? input.map(parseB32Str) : parseB32Str(input);
 }
+
+export function printArgs(args: any[]): void {
+  args.forEach(e => {
+      console.log(e._isBigNumber ? e.toNumber() : e);
+  });
+}

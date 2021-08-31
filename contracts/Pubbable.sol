@@ -33,13 +33,14 @@ contract Pubbable is ERC1155 {
     constructor() ERC1155("https://fake.metadata.com/replace_me") { }
 
     // call this to create a new fungible governance token type for a new bar
-    function newBar(uint32 initialTokenSupply) 
+    function mintBar(uint32 initialTokenSupply) 
         external payable 
     {
         require(addrToManagedGovToken[msg.sender] == 0, "address already manages a token");
         
         barIdCounter += 2;  // incrementing by 2 keeps LSB the same
         addrToManagedGovToken[msg.sender] = barIdCounter;
+
         _mint(msg.sender, barIdCounter, initialTokenSupply, "");
     }
 
