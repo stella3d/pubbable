@@ -62,19 +62,14 @@ describe("Pubbable", function () {
         let lastCocktailId: BigNumber;
         let toAddress: BigNumber
 
-        const cocktailName = stringToBytes32("Dark & Stormy");
-        const ingredients = stringToBytes32([
-            "Dark Rum", "Ginger Beer", "1/4 lime squeezed"]);
-
         before(async function() {
             lastCocktailId = await pubbable.cocktailIdCounter();
             const lastBarId = await pubbable.barIdCounter();
             // TODO - vary the 'to' address from the initial message sender
             toAddress = senderAddress
             // run the mint function here and test effects in tests
-            let mintTx = await pubbable.mintCocktail(
-                toAddress, lastBarId, cocktailName, ingredients
-            );
+            let mintTx = await pubbable.mintCocktail(toAddress, lastBarId);
+
             txReceipt = await mintTx.wait();
             mintEvent = txReceipt.events[0];
             mintArgs = mintEvent.args;

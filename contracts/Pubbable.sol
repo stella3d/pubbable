@@ -4,16 +4,6 @@ import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 
 contract Pubbable is ERC1155 {
 
-    // TODO - move this off-chain into metadata, which exists per-id ?
-    struct Cocktail {
-        // use bytes32 instead of strings to lower gas costs
-        bytes32 name;
-        bytes32[] ingredients;
-    }
-
-    // map from non-fungible token ID to cocktail data
-    mapping(uint256 => Cocktail) public cocktails;
-        
     struct GovernanceParameters {
         uint16 maxCocktailCount;
         uint16 currentCocktailCount;
@@ -47,7 +37,7 @@ contract Pubbable is ERC1155 {
     }
 
     // call this to create a cocktail NFT for a bar
-    function mintCocktail(address to, uint256 minterTokenId, bytes32 _name, bytes32[] calldata _ingredients) 
+    function mintCocktail(address to, uint256 minterTokenId) 
         external payable 
     {
         _requireSenderManagesToken(minterTokenId);
@@ -60,8 +50,6 @@ contract Pubbable is ERC1155 {
 
         // incrementing by 2 keeps LSB the same
         cocktailIdCounter += 2;
-        // store text data for this cocktail  
-        cocktails[cocktailIdCounter] = Cocktail(_name, _ingredients);
         // each cocktail has a unique token ID (an odd number) & supply of 1
         _mint(to, cocktailIdCounter, 1, "");
     }
