@@ -26,10 +26,10 @@ contract Pubbable is ERC1155 {
     constructor(string memory metadataUri) ERC1155(metadataUri) { }
 
     // call this to create a new fungible governance token type for a new bar
-    // TODO: add address as explicit argument
     function mintBar(uint32 initialTokenSupply) 
         external payable 
     {
+        // only mint to 'msg.sender', to ensure that the receiver wants to manage the token
         require(addrToManagedGovToken[msg.sender] == 0, "address already manages a token");
         
         barIdCounter += 2;  // incrementing by 2 keeps LSB the same
