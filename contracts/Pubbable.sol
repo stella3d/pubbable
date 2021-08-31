@@ -21,7 +21,8 @@ contract Pubbable is ERC1155 {
     // fungible per-bar gov tokens must have LSB=0 (evens)
     uint256 public barIdCounter = 2;
 
-    constructor(string memory baseMetaDataUri) ERC1155(baseMetaDataUri) { }
+    // URI must follow ERC-1155 metadata format, contain "{id}"
+    constructor(string memory metadataUri) ERC1155(metadataUri) { }
 
     // call this to create a new fungible governance token type for a new bar
     // TODO: add address as explicit argument
