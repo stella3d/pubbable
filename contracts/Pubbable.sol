@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 contract Pubbable is ERC1155 {
 
     struct Cocktail {
+        // use bytes32 instead of strings to lower gas costs
         bytes32 name;
         bytes32[] ingredients;
     }
